@@ -33,18 +33,33 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.MinecartCommandBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.EnumSet;
+import java.util.Set;
+
+import static com.comphenix.protocol.PacketType.Play.Client.ENTITY_NBT_QUERY;
+import static com.comphenix.protocol.PacketType.Play.Client.TILE_NBT_QUERY;
 import static me.asone.datasyncer.Action.*;
 
 public final class DataSyncer extends JavaPlugin {
     private ProtocolManager protocolManager;
     private PacketAdapter adapter;
     private final CompatManager compatManager = CompatManager.getInstance();
+
+    private static final Set<Material> OPERATOR_BLOCKS = EnumSet.of(
+            Material.COMMAND_BLOCK,
+            Material.REPEATING_COMMAND_BLOCK,
+            Material.CHAIN_COMMAND_BLOCK,
+            Material.JIGSAW,
+            Material.STRUCTURE_BLOCK
+    );
 
     @Override
     public void onEnable() {
@@ -62,8 +77,8 @@ public final class DataSyncer extends JavaPlugin {
 
     private PacketAdapter createPacketAdapter() {
         return new PacketAdapter(this, ListenerPriority.NORMAL,
-                PacketType.Play.Client.ENTITY_NBT_QUERY,
-                PacketType.Play.Client.TILE_NBT_QUERY) {
+                ENTITY_NBT_QUERY,
+                TILE_NBT_QUERY) {
 
             @Override
             public void onPacketReceiving(PacketEvent event) {
@@ -74,18 +89,15 @@ public final class DataSyncer extends JavaPlugin {
                 if (!craftPlayer.isOnline() || !action.hasPerm(craftPlayer)) return;
 
                 Bukkit.getRegionScheduler().run(DataSyncer.this, event.getPlayer().getLocation(), task -> {
-                    ServerPlayer player = craftPlayer.getHandle();
-                    ServerLevel level = player.serverLevel();
+                    ServerPlayer nmsPlayer = craftPlayer.getHandle();
+                    ServerLevel level = nmsPlayer.serverLevel();
                     PacketContainer packet = event.getPacket();
                     int transactionId = packet.getIntegers().read(0);
-                    CompoundTag tag = null;
-
-                    switch (action) {
-                        case BLOCK -> tag = getBlockTag(packet, craftPlayer, level, player, action);
-                        case ENTITY -> tag = getEntityTag(packet, craftPlayer, level, player, action);
-                    }
-
-                    player.connection.send(new ClientboundTagQueryPacket(transactionId, tag));
+                    CompoundTag tag = switch (action) {
+                        case BLOCK -> getBlockTag(packet, craftPlayer, level, nmsPlayer);
+                        case ENTITY -> getEntityTag(packet, craftPlayer, level);
+                    };
+                    nmsPlayer.connection.send(new ClientboundTagQueryPacket(transactionId, tag));
                 });
             }
         };
@@ -97,25 +109,31 @@ public final class DataSyncer extends JavaPlugin {
         return null;
     }
 
-    private CompoundTag getBlockTag(PacketContainer packet, CraftPlayer player, ServerLevel level, ServerPlayer nmsPlayer, Action action) {
+    private CompoundTag getBlockTag(PacketContainer packet, CraftPlayer player, ServerLevel level, ServerPlayer nmsPlayer) {
         BlockPosition pos = packet.getBlockPositionModifier().read(0);
         Location location = new Location(player.getWorld(), pos.getX(), pos.getY(), pos.getZ());
 
-        if (!location.isChunkLoaded() || !compatManager.check(player, location, action)) return null;
+        if (!location.isChunkLoaded() || !compatManager.check(player, location, BLOCK)) return null;
 
         BlockEntity blockEntity = level.getBlockEntity(new BlockPos(pos.getX(), pos.getY(), pos.getZ()));
+        if (blockEntity == null) return null;
 
-        return blockEntity != null ? blockEntity.saveWithoutMetadata(nmsPlayer.registryAccess()) : null;
+        Material material = blockEntity.getBlockState().getBukkitMaterial();
+        if (OPERATOR_BLOCKS.contains(material) && !player.hasPermission("datasyncer.op")) return null;
+
+        return blockEntity.saveWithoutMetadata(nmsPlayer.registryAccess());
     }
 
-    private CompoundTag getEntityTag(PacketContainer packet, CraftPlayer player, ServerLevel level, ServerPlayer nmsPlayer, Action action) {
+    private CompoundTag getEntityTag(PacketContainer packet, CraftPlayer player, ServerLevel level) {
         int entityId = packet.getIntegers().read(1);
         Entity entity = level.getEntity(entityId);
         if (entity == null) return null;
+
         if (entity instanceof Player && !player.hasPermission("datasyncer.entity.player")) return null;
+        if (entity instanceof MinecartCommandBlock && !player.hasPermission("datasyncer.op")) return null;
 
         Location location = entity.getBukkitEntity().getLocation();
-        if (!location.isChunkLoaded() || !compatManager.check(player, location, action)) return null;
+        if (!location.isChunkLoaded() || !compatManager.check(player, location, ENTITY)) return null;
 
         return entity.saveWithoutId(new CompoundTag());
     }
