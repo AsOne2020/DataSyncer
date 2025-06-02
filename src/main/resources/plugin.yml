@@ -15,6 +15,6 @@ permissions:
   datasyncer.entity:
     description: Has permission to query entity data
     default: true
-  datasyncer.player:
+  datasyncer.entity.player:
     description: Has permission to query player entity data
-    default: true
+    default: op

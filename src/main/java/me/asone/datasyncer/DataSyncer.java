@@ -32,6 +32,7 @@ import net.minecraft.network.protocol.game.ClientboundTagQueryPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -111,9 +112,10 @@ public final class DataSyncer extends JavaPlugin {
         int entityId = packet.getIntegers().read(1);
         Entity entity = level.getEntity(entityId);
         if (entity == null) return null;
+        if (entity instanceof Player && !player.hasPermission("datasyncer.entity.player")) return null;
 
         Location location = entity.getBukkitEntity().getLocation();
-        if (!location.isChunkLoaded() ||  !compatManager.check(player, location, action)) return null;
+        if (!location.isChunkLoaded() || !compatManager.check(player, location, action)) return null;
 
         return entity.saveWithoutId(new CompoundTag());
     }
