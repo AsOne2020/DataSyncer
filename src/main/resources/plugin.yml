@@ -5,6 +5,7 @@ description: Allows players to query entity or block entity data using the vanil
 api-version: '${mc_version}'
 authors: [ As_One ]
 folia-supported: true
+website: https://github.com/AsOne2020/DataSyncer
 depend:
   - ProtocolLib
 
