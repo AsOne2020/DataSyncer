@@ -1,7 +1,7 @@
 name: DataSyncer
 version: '${plugin_version}'
 main: me.asone.datasyncer.DataSyncer
-description: Allows players to query entity or block entity data using the vanilla protocol
+description: Allows players to sync entity and block entity datas using vanilla's tag query protocol
 api-version: '${mc_version}'
 authors: [ As_One ]
 folia-supported: true
@@ -15,10 +15,10 @@ permissions:
     default: op
   datasyncer.block:
     description: Has permission to query block data
-    default: true
+    default: op
   datasyncer.entity:
     description: Has permission to query entity data
-    default: true
+    default: op
   datasyncer.entity.player:
     description: Has permission to query player entity data
     default: op
