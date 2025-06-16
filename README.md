@@ -5,7 +5,7 @@
 - [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/)
 
 ## Description
-This plugin allows players to query server-side entity or block entity data using the vanilla protocol
+A plugin that allows players to sync entity and block entity datas using vanilla's tag query protocol
 
 ## Permissions
 | Permission               | Description | Default |
@@ -14,3 +14,7 @@ This plugin allows players to query server-side entity or block entity data usin
 | datasyncer.entity        | Has permission to query entity data | op    |
 | datasyncer.entity.player | Has permission to query player entity data | op      |
 | datasyncer.op            | Has permission to query operator utilities data | op      |
+
+## Compatibility
+
+[Residence](https://www.spigotmc.org/resources/11480/) or [Dominion](https://modrinth.com/plugin/lunadeer-dominion) (Region query permission control by using "container" flag)
