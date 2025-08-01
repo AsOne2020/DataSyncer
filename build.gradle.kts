@@ -103,6 +103,7 @@ tasks {
 
     shadowJar {
         archiveClassifier = ""
+        relocate("org.bstats", "${project.properties["maven_group"]}.bstats")
         minimize()
         manifest {
             attributes["paperweight-mappings-namespace"] = "spigot"

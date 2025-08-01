@@ -28,6 +28,8 @@ import com.comphenix.protocol.wrappers.BlockPosition;
 import me.asone.datasyncer.compat.CompatManager;
 import me.asone.datasyncer.nms.NMSHandler;
 import me.asone.datasyncer.permission.Permissions;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -73,7 +75,7 @@ public final class DataSyncer extends JavaPlugin {
         }
 
         metric = new Metrics(this, METRICS_SERVICE_ID);
-        metric.addCustomChart(new Metrics.AdvancedPie("minecraft_version_player_amount", () -> Map.of(Bukkit.getMinecraftVersion(), Bukkit.getOnlinePlayers().size())));
+        metric.addCustomChart(new AdvancedPie("minecraft_version_player_amount", () -> Map.of(Bukkit.getMinecraftVersion(), Bukkit.getOnlinePlayers().size())));
 
         compatManager = CompatManager.getInstance();
         protocolManager = ProtocolLibrary.getProtocolManager();
