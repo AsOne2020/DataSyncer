@@ -66,8 +66,8 @@ allprojects {
         }
         mapping("java", "SLASHSTAR_STYLE_NEWLINE")
 
-        ext["name"] = "DataSyncer"
-        ext["author"] = "As_One"
+        ext["name"] = project.properties["plugin_name"]
+        ext["author"] = project.properties["author"]
         ext["year"] = Calendar.getInstance().get(Calendar.YEAR).toString()
     }
 }
@@ -127,7 +127,7 @@ tasks {
             attributes["paperweight-mappings-namespace"] = io.papermc.paperweight.util.constants.SPIGOT_NAMESPACE
         }
         from(rootProject.file("LICENSE")) {
-            rename { "${it}_DataSyncer" }
+            rename { "${it}_${project.properties["plugin_name"]}" }
         }
     }
 
