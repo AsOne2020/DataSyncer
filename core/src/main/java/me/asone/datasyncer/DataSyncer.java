@@ -45,6 +45,7 @@ import static com.comphenix.protocol.PacketType.Play.Client.TILE_NBT_QUERY;
 import static me.asone.datasyncer.Action.*;
 
 public final class DataSyncer extends JavaPlugin {
+    boolean devMode;
     private ProtocolManager protocolManager;
     private PacketAdapter adapter;
     private NMSHandler nmsHandler;
@@ -53,6 +54,7 @@ public final class DataSyncer extends JavaPlugin {
     public static final int METRICS_SERVICE_ID = 26729;
     @SuppressWarnings("FieldCanBeLocal")
     private Metrics metric;
+
     public static DataSyncer getInstance() {
         return instance;
     }
@@ -68,15 +70,16 @@ public final class DataSyncer extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        devMode = Boolean.parseBoolean(System.getProperty(this.getName() + ".DEV_MODE"));
         this.nmsHandler = NMSHandler.getInstance();
         if (nmsHandler == null) {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-
-        metric = new Metrics(this, METRICS_SERVICE_ID);
-        metric.addCustomChart(new AdvancedPie("minecraft_version_player_amount", () -> Map.of(Bukkit.getMinecraftVersion(), Bukkit.getOnlinePlayers().size())));
-
+        if (!devMode) {
+            metric = new Metrics(this, METRICS_SERVICE_ID);
+            metric.addCustomChart(new AdvancedPie("minecraft_version_player_amount", () -> Map.of(Bukkit.getMinecraftVersion(), Bukkit.getOnlinePlayers().size())));
+        }
         compatManager = CompatManager.getInstance();
         protocolManager = ProtocolLibrary.getProtocolManager();
         adapter = createPacketAdapter();

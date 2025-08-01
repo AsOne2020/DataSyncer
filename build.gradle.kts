@@ -1,3 +1,4 @@
+import xyz.jpenilla.runpaper.task.RunServer
 import java.util.Calendar
 
 plugins {
@@ -80,33 +81,50 @@ dependencies {
     api(project(":v1_21_6", io.papermc.paperweight.util.constants.REOBF_CONFIG))
 }
 
-// register runFolia task
 runPaper.folia.registerTask()
 
-tasks {
-    runServer {
-        // Configure the Minecraft version for our task.
-        // This is the only required configuration besides applying the plugin.
-        // Your plugin's jar (or shadowJar if present) will be used automatically.
-        downloadPlugins {
-            url("https://www.zrips.net/CMILib/CMILib1.5.6.0.jar")
-            url("https://zrips.net/Residence/files/Residence5.1.7.7.jar")
-            github("LunaDeerMC", "Dominion", "v4.5.0-beta", "Dominion-4.5.0-beta-full.jar")
-            url("https://ci.lucko.me/job/LuckPerms-Folia/9/artifact/bukkit/loader/build/libs/LuckPerms-Bukkit-5.5.11.jar")
-            github("Test-Account666", "PlugManX", "2.4.1", "PlugManX-2.4.1.jar")
-            url("https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/build/libs/ProtocolLib.jar")
-            hangar("ViaVersion", "5.5.0-SNAPSHOT+793")
+val mcVersion = "1.21.6"
+val jvavVersion = JavaLanguageVersion.of(21)
+val jvmArgsExternal = listOf(
+    "-Dcom.mojang.eula.agree=true",
+    "-XX:+AllowEnhancedClassRedefinition",
+    "-D${project.properties["plugin_name"]}.DEV_MODE=true"
+)
 
+val paperPlugins = runPaper.downloadPluginsSpec {
+    // Configure the Minecraft version for our task.
+    // This is the only required configuration besides applying the plugin.
+    // Your plugin's jar (or shadowJar if present) will be used automatically.
+    url("https://www.zrips.net/CMILib/CMILib1.5.6.0.jar")
+    url("https://zrips.net/Residence/files/Residence5.1.7.7.jar")
+    github("LunaDeerMC", "Dominion", "v4.5.0-beta", "Dominion-4.5.0-beta-full.jar")
+    url("https://ci.lucko.me/job/LuckPerms-Folia/9/artifact/bukkit/loader/build/libs/LuckPerms-Bukkit-5.5.11.jar")
+    github("Test-Account666", "PlugManX", "2.4.1", "PlugManX-2.4.1.jar")
+    url("https://ci.dmulloy2.net/job/ProtocolLib/755/artifact/build/libs/ProtocolLib.jar")
+    modrinth("ViaVersion", "5.5.0-SNAPSHOT+793")
+    modrinth("ViaBackwards", "5.4.3-SNAPSHOT+467")
+}
+
+tasks {
+    withType<RunServer> {
+        val isFolia = gradle.startParameter.taskNames.any { it.contains("Folia", ignoreCase = true) }
+        minecraftVersion(mcVersion)
+        runDirectory = rootDir.resolve("run/${if (isFolia) "folia" else "paper"}/$mcVersion")
+        downloadPlugins.from(paperPlugins)
+        jvmArgs = jvmArgsExternal
+        javaLauncher = project.javaToolchains.launcherFor {
+            @Suppress("UnstableApiUsage")
+            vendor = JvmVendorSpec.JETBRAINS
+            languageVersion = jvavVersion
         }
-        minecraftVersion("1.21.8")
     }
 
     shadowJar {
-        archiveClassifier = ""
+        archiveClassifier.set("")
         relocate("org.bstats", "${project.properties["maven_group"]}.bstats")
         minimize()
         manifest {
-            attributes["paperweight-mappings-namespace"] = "spigot"
+            attributes["paperweight-mappings-namespace"] = io.papermc.paperweight.util.constants.SPIGOT_NAMESPACE
         }
         from(rootProject.file("LICENSE")) {
             rename { "${it}_DataSyncer" }
@@ -116,13 +134,4 @@ tasks {
     build {
         dependsOn(shadowJar)
     }
-}
-
-tasks.withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
-    javaLauncher = javaToolchains.launcherFor {
-        @Suppress("UnstableApiUsage")
-        vendor = JvmVendorSpec.JETBRAINS
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-    jvmArgs("-XX:+AllowEnhancedClassRedefinition")
 }

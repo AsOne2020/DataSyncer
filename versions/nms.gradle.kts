@@ -10,5 +10,5 @@ dependencies {
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.REOBF_PRODUCTION
 
 tasks.assemble {
-    dependsOn(tasks.named("reobfJar"))
+    dependsOn(tasks.reobfJar)
 }
