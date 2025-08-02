@@ -92,9 +92,6 @@ val jvmArgsExternal = listOf(
 )
 
 val paperPlugins = runPaper.downloadPluginsSpec {
-    // Configure the Minecraft version for our task.
-    // This is the only required configuration besides applying the plugin.
-    // Your plugin's jar (or shadowJar if present) will be used automatically.
     url("https://www.zrips.net/CMILib/CMILib1.5.6.0.jar")
     url("https://zrips.net/Residence/files/Residence5.1.7.7.jar")
     github("LunaDeerMC", "Dominion", "v4.5.0-beta", "Dominion-4.5.0-beta-full.jar")
