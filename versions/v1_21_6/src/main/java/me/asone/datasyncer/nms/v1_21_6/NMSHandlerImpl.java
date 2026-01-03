@@ -18,7 +18,7 @@
  * along with DataSyncer.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.asone.datasyncer.nms.v1_21_6;
+package me.asone.datasyncer.nms.v1_21_11;
 
 import me.asone.datasyncer.DataSyncer;
 import me.asone.datasyncer.nms.NMSHandler;
