@@ -17,9 +17,9 @@ tasks {
     processResources {
         filesMatching("plugin.yml") {
             expand(
-                "plugin_name" to project.properties["plugin_name"],
-                "plugin_version" to project.properties["plugin_version"],
-                "api_version" to project.properties["api_version"],
+                "plugin_name" to project.property("plugin_name").toString(),
+                "plugin_version" to project.property("plugin_version").toString(),
+                "api_version" to project.property("api_version").toString(),
             )
         }
     }

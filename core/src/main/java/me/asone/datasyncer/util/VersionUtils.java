@@ -34,6 +34,8 @@ public class VersionUtils {
         VERSION_MAPPING.put("v1_21_3", "v1_21_2");
         VERSION_MAPPING.put("v1_21_7", "v1_21_6");
         VERSION_MAPPING.put("v1_21_8", "v1_21_6");
+        VERSION_MAPPING.put("v1_21_9", "v1_21_6");
+        VERSION_MAPPING.put("v1_21_10", "v1_21_6");
     }
 
     public static String getPackageVersion() {

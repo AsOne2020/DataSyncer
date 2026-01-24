@@ -2,11 +2,18 @@ import xyz.jpenilla.runpaper.task.RunServer
 import java.util.Calendar
 
 plugins {
+
     `java-library`
+
     id("com.gradleup.shadow") version "9.0.0-beta16"
-    id("xyz.jpenilla.run-paper") version "2.3.1"
+
+    // https://github.com/jpenilla/run-task
+    id("xyz.jpenilla.run-paper") version "3.0.2"
+
     id("com.github.hierynomus.license") version "0.16.1"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.18" apply false
+
+    // https://github.com/PaperMC/paperweight
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19" apply false
 }
 
 group = project.properties["maven_group"]!!
@@ -83,7 +90,7 @@ dependencies {
 
 runPaper.folia.registerTask()
 
-val mcVersion = "1.21.6"
+val mcVersion = "1.21.10"
 val jvavVersion = JavaLanguageVersion.of(21)
 val jvmArgsExternal = listOf(
     "-Dcom.mojang.eula.agree=true",
@@ -92,14 +99,30 @@ val jvmArgsExternal = listOf(
 )
 
 val paperPlugins = runPaper.downloadPluginsSpec {
-    url("https://www.zrips.net/CMILib/CMILib1.5.6.0.jar")
-    url("https://zrips.net/Residence/files/Residence5.1.7.7.jar")
-    github("LunaDeerMC", "Dominion", "v4.5.0-beta", "Dominion-4.5.0-beta-full.jar")
-    url("https://ci.lucko.me/job/LuckPerms-Folia/9/artifact/bukkit/loader/build/libs/LuckPerms-Bukkit-5.5.11.jar")
-    github("Test-Account666", "PlugManX", "2.4.1", "PlugManX-2.4.1.jar")
-    url("https://ci.dmulloy2.net/job/ProtocolLib/755/artifact/build/libs/ProtocolLib.jar")
-    modrinth("ViaVersion", "5.5.0-SNAPSHOT+793")
-    modrinth("ViaBackwards", "5.4.3-SNAPSHOT+467")
+
+    //https://www.zrips.net/CMILib
+    url("https://www.zrips.net/CMILib/CMILib1.5.8.3.jar")
+
+    // https://zrips.net/Residence/
+    url("https://zrips.net/Residence/files/Residence6.0.1.4.jar")
+
+    // https://github.com/LunaDeerMC/Dominion/releases
+    github("LunaDeerMC", "Dominion", "v4.7.0-beta", "Dominion-4.7.0-beta-full.jar")
+
+    // https://ci.lucko.me/job/LuckPerms-Folia/lastBuild/
+    url("https://ci.lucko.me/job/LuckPerms-Folia/lastBuild/artifact/bukkit/loader/build/libs/LuckPerms-Bukkit-5.5.11.jar")
+
+    // https://github.com/Test-Account666/PlugManX
+    github("Test-Account666", "PlugManX", "v3.0.3", "PlugManX-3.0.3.jar")
+
+    // https://github.com/dmulloy2/ProtocolLib/releases/tag/dev-build
+    github("dmulloy2", "ProtocolLib", "dev-build", "ProtocolLib.jar")
+
+    // https://modrinth.com/plugin/viaversion/versions
+    modrinth("ViaVersion", "5.7.2-SNAPSHOT+906")
+
+    // https://modrinth.com/plugin/viabackwards/versions
+    modrinth("ViaBackwards", "5.7.1")
 }
 
 tasks {
