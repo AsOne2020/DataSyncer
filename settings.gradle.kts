@@ -7,7 +7,7 @@ rootProject.name = "DataSyncer"
 include(":core")
 
 listOf(
-    "v1_21", "v1_21_2", "v1_21_4", "v1_21_5", "v1_21_6"
+    "v1_21", "v1_21_2", "v1_21_4", "v1_21_5", "v1_21_6", "v1_21_11"
 ).forEach {
     include(":$it")
     val proj = project(":$it")

@@ -86,11 +86,12 @@ dependencies {
     api(project(":v1_21_4", io.papermc.paperweight.util.constants.REOBF_CONFIG))
     api(project(":v1_21_5", io.papermc.paperweight.util.constants.REOBF_CONFIG))
     api(project(":v1_21_6", io.papermc.paperweight.util.constants.REOBF_CONFIG))
+    api(project(":v1_21_11", io.papermc.paperweight.util.constants.REOBF_CONFIG))
 }
 
 runPaper.folia.registerTask()
 
-val mcVersion = "1.21.10"
+val mcVersion = "1.21.11"
 val jvavVersion = JavaLanguageVersion.of(21)
 val jvmArgsExternal = listOf(
     "-Dcom.mojang.eula.agree=true",
@@ -101,28 +102,28 @@ val jvmArgsExternal = listOf(
 val paperPlugins = runPaper.downloadPluginsSpec {
 
     //https://www.zrips.net/CMILib
-    url("https://www.zrips.net/CMILib/CMILib1.5.8.3.jar")
+    url("https://www.zrips.net/CMILib/CMILib1.5.8.7.jar")
 
     // https://zrips.net/Residence/
-    url("https://zrips.net/Residence/files/Residence6.0.1.4.jar")
+    url("https://zrips.net/Residence/files/Residence6.0.1.6.jar")
 
     // https://github.com/LunaDeerMC/Dominion/releases
-    github("LunaDeerMC", "Dominion", "v4.7.0-beta", "Dominion-4.7.0-beta-full.jar")
+    github("LunaDeerMC", "Dominion", "v4.7.5-release", "Dominion-4.7.5-release-full.jar")
 
     // https://ci.lucko.me/job/LuckPerms-Folia/lastBuild/
-    url("https://ci.lucko.me/job/LuckPerms-Folia/lastBuild/artifact/bukkit/loader/build/libs/LuckPerms-Bukkit-5.5.11.jar")
+    url("https://ci.lucko.me/job/LuckPerms-Folia/lastBuild/artifact/bukkit/loader/build/libs/LuckPerms-Bukkit-5.5.29.jar")
 
     // https://github.com/Test-Account666/PlugManX
-    github("Test-Account666", "PlugManX", "v3.0.3", "PlugManX-3.0.3.jar")
+    github("Test-Account666", "PlugManX", "v3.0.4-dev1", "PlugManX-3.0.4-dev1.jar")
 
     // https://github.com/dmulloy2/ProtocolLib/releases/tag/dev-build
     github("dmulloy2", "ProtocolLib", "dev-build", "ProtocolLib.jar")
 
     // https://modrinth.com/plugin/viaversion/versions
-    modrinth("ViaVersion", "5.7.2-SNAPSHOT+906")
+    modrinth("ViaVersion", "5.7.3-SNAPSHOT+927")
 
     // https://modrinth.com/plugin/viabackwards/versions
-    modrinth("ViaBackwards", "5.7.1")
+    modrinth("ViaBackwards", "5.7.2")
 }
 
 tasks {
